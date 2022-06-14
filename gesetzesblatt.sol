@@ -1,7 +1,7 @@
-pragma 0.9;
+pragma solidity ^0.8;
 
 
-\\ hier Überprüfung für Wahlverzeichnis einbauen
+// hier Überprüfung für Wahlverzeichnis einbauen
 
 
 contract gesetzesblatt {
