@@ -5,9 +5,15 @@ pragma solidity ^0.8.0;
 
 
     contract gesetzesblatt {
-        string[] public gueltige_gesetze;
+        struct Gesetz {
+            string name;
+            string beschreibung;
+        }
 
-        function add_gesetz (string memory neues_gesetz) public {
+        Gesetz[] public gueltige_gesetze;
+
+        function add_gesetz (string memory neues_gesetz_name, string memory neues_gesetz_beschreibung) public {
+            Gesetz memory neues_gesetz = Gesetz(neues_gesetz_name, neues_gesetz_beschreibung);
             gueltige_gesetze.push(neues_gesetz);
         }
     }
