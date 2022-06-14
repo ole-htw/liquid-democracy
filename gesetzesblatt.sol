@@ -1,13 +1,13 @@
-pragma 0.9;
+pragma solidity ^0.8.0;
 
 
-\\ hier Überprüfung für Wahlverzeichnis einbauen
+// hier Überprüfung für Wahlverzeichnis einbauen
 
 
-contract gesetzesblatt {
-    string[] gueltige_gesetze;
+    contract gesetzesblatt {
+        string[] public gueltige_gesetze;
 
-    function add_gesetz (string neues_gesetz) {
-        gueltige_gesetze.push(neues_gesetz);
+        function add_gesetz (string memory neues_gesetz) public {
+            gueltige_gesetze.push(neues_gesetz);
+        }
     }
-}

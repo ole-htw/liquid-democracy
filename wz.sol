@@ -1,3 +1,4 @@
+pragma 0.8;
 
 
 contract wahlorga {
@@ -13,7 +14,7 @@ contract wahlorga {
     adress[] waehlerverzeichnis;
 
     uint32 letzte_gesetzes_id = 1;
-    Gesetzesvorschlag[] aktuelle_gvs; \\ nach Zeit geordnet
+    Gesetzesvorschlag[] aktuelle_gvs; // nach Zeit geordnet
 
 
 
@@ -38,8 +39,8 @@ contract wahlorga {
         aktuelle_gvs.push(neuerGV);
         letzte_gesetzes_id = letzte_gesetzes_id + 1;
 
-        \\ token erstellt werden
-        \\ zwei urnen erstellen
+        // token erstellt werden
+        // zwei urnen erstellen
 
 
     }
