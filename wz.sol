@@ -16,7 +16,7 @@ contract wahlorga {
     mapping(address => bool) public waehlerverzeichnis;
 
     uint32 public letzte_gesetzes_id = 1;
-    //Gesetzesvorschlag[] aktuelle_gvs; // nach Zeit geordnet
+    Gesetzesvorschlag[] public aktuelle_gvs; // nach Zeit geordnet
 
 
     function registieren() public {
@@ -31,13 +31,17 @@ contract wahlorga {
         Urne nein_urne = new Urne(name, beschreibung, false, letzte_gesetzes_id);
 
 
-        // Gesetzesvorschlag neuerGV = Gesetzesvorschlag(name, beschreibung, letzte_gesetzes_id, now, ja_urne.get_address(), nein_urne.get_address());
+        Gesetzesvorschlag memory neuerGV = Gesetzesvorschlag(name, 
+                                                    beschreibung, 
+                                                    letzte_gesetzes_id, 
+                                                    block.timestamp, 
+                                                    address(ja_urne), 
+                                                    address(nein_urne));
 
-        //aktuelle_gvs.push(neuerGV);
+        aktuelle_gvs.push(neuerGV);
         letzte_gesetzes_id++;// = letzte_gesetzes_id + 1;
 
         // token erstellt werden
-        // zwei urnen erstellen
 
 
     }
