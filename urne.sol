@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 
 
-contract urne {
+contract Urne {
     string gesetz_name;
     string gesetz_beschreibung;
     bool ist_ja_urne;
@@ -14,6 +14,11 @@ contract urne {
         gesetz_beschreibung = _gesetz_beschreibung;
         ist_ja_urne = _ist_ja_urne;
         gesetz_id = _gesetz_id;
+    }
+
+
+    function get_address() public returns(address) {
+        return address(this);
     }
 
 }
