@@ -1,9 +1,9 @@
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import "./Urne.sol";
 
-import "./urne.sol";
-
-contract wahlorga {
+contract WahlOrga {
     struct Gesetzesvorschlag {
         string name;
         string beschreibung;
@@ -13,6 +13,10 @@ contract wahlorga {
         address urne_nein;
     }
 
+    /**
+    DISKUSSION: Ich schlage vor daraus ein address[] zu machen. Ich verstehe die Vorteile einer Hashtable, aber wir brauchen ein Iterable.
+    Eventuell können wir auch eine zweite State Variable machen, siehe  https://medium.com/@blockchain101/looping-in-solidity-32c621e05c22.
+     */
     mapping(address => bool) public waehlerverzeichnis;
 
     uint32 public letzte_gesetzes_id = 1;
@@ -30,7 +34,6 @@ contract wahlorga {
         Urne ja_urne = new Urne(name, beschreibung, true, letzte_gesetzes_id);
         Urne nein_urne = new Urne(name, beschreibung, false, letzte_gesetzes_id);
 
-
         Gesetzesvorschlag memory neuerGV = Gesetzesvorschlag(name, 
                                                     beschreibung, 
                                                     letzte_gesetzes_id, 
@@ -39,10 +42,9 @@ contract wahlorga {
                                                     address(nein_urne));
 
         aktuelle_gvs.push(neuerGV);
-        letzte_gesetzes_id++;// = letzte_gesetzes_id + 1;
+        letzte_gesetzes_id++;
 
         // token erstellt werden
-
 
     }
 
