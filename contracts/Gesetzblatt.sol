@@ -4,16 +4,17 @@ pragma solidity ^0.8.0;
 // hier Überprüfung für Wahlverzeichnis einbauen
 
 
-contract Gesetz {
+contract Gesetzblatt {
     struct Gesetz {
         string name;
         string beschreibung;
     }
 
-    Gesetz[] public gueltige_gesetze;
+    // Gültige, beschlossene Gesetze
+    Gesetz[] public gesetze;
 
     function add_gesetz (string memory neues_gesetz_name, string memory neues_gesetz_beschreibung) public {
         Gesetz memory neues_gesetz = Gesetz(neues_gesetz_name, neues_gesetz_beschreibung);
-        gueltige_gesetze.push(neues_gesetz);
+        gesetze.push(neues_gesetz);
     }
 }
