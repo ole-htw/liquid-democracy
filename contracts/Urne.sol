@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract Urne {
+contract Urne { // Todo: ERC71 Holder
     string gesetz_name;
     string gesetz_beschreibung;
     bool ist_ja_urne;
@@ -14,4 +14,7 @@ contract Urne {
         gesetz_id = _gesetz_id;
     }
 
+
+    // Todo: Überprüfen, ob Transfer richtige ID hat
+    // Todo: Falls Zeit überschritten, dann zurückmelden
 }
