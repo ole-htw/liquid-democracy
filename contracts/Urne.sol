@@ -14,7 +14,6 @@ contract Urne { // Todo: ERC71 Holder
         gesetz_id = _gesetz_id;
     }
 
-
     // Todo: Überprüfen, ob Transfer richtige ID hat
     // Todo: Falls Zeit überschritten, dann zurückmelden
 }

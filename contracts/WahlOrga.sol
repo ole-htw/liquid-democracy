@@ -36,7 +36,7 @@ contract WahlOrga {
     mapping (address => mapping(uint32 => uint256)) public owner_gesetz_2_token_id;
 
 
-    function registieren() public {
+    function registrieren() public {
         map_waehlerverzeichnis[msg.sender] = true;
         list_waehlerverzeichnis.push(msg.sender);
     }
