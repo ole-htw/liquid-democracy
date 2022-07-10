@@ -24,7 +24,7 @@ def main(args):
     if args.action == 'register':
         print(register(w3, account))
     elif args.action == 'propose':
-        print(propose(w3, account, args.title, args.description))
+        print(propose(w3, account, args.description))
     elif args.action == 'status':
         print(status(w3, account))
     elif args.action == 'vote':
@@ -43,7 +43,6 @@ if __name__ == '__main__':
     parser_register = sub_parsers.add_parser('register', help='Registriere dich ins Wählerverzeichnis')
     
     parser_delegate = sub_parsers.add_parser('propose', help='Reiche einen neuen Gesetzesvorschlag ein')
-    parser_delegate.add_argument('--title', type=str, help='Titel des Gesetzes')
     parser_delegate.add_argument('--description', type=str, help='Beschreibung des Gesetzes')
     
     parser_delegate = sub_parsers.add_parser('status', help='Statusabfrage')
