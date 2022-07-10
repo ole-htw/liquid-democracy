@@ -4,3 +4,4 @@ node_modules
 .vscode/
 build
 __pycache__
+.secret
