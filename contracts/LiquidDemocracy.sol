@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 enum Vote{ FOR, AGAINST, NEUTRAL }
-enum Domain{EDUCATION, ECOLOGY, ECONOMY }
+enum Domain{ EDUCATION, ECOLOGY, ECONOMY }
 
 struct SubmittedVote {
     address voter;
@@ -11,7 +11,7 @@ struct SubmittedVote {
 }
 
 struct Proposal {
-    uint id; 
+    uint id;
     Domain domain;
     string description; 
 }
@@ -30,6 +30,11 @@ contract LiquidDemocracy {
     }
 
     function vote(uint proposalID, Vote value) public payable {
+        require(proposalID < proposals.length, "Proposal ID does not exist.");
+        require(
+            delegations[msg.sender][proposals[proposalID].domain] == address(0), 
+            "You have delegated votes in this domain."
+        );
         submittedVotes[proposalID][msg.sender] = value;
     }
 
