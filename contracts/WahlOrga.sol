@@ -26,7 +26,6 @@ contract WahlOrga {
     mapping (uint256 => uint32) public token_2_gesetz_id;
     mapping (uint256 => bool) public ist_token_noch_aktiv;
     
-    
     struct _owner_gesetz {
         address owner;
         uint32 gesetz_id;
@@ -37,8 +36,10 @@ contract WahlOrga {
 
 
     function registrieren() public {
-        map_waehlerverzeichnis[msg.sender] = true;
-        list_waehlerverzeichnis.push(msg.sender);
+        if (!map_waehlerverzeichnis[msg.sender]) {
+            map_waehlerverzeichnis[msg.sender] = true;
+            list_waehlerverzeichnis.push(msg.sender);
+        }
     }
 
     function neuerGesetzesvorschlag(string memory name, string memory beschreibung) public payable{
