@@ -2,7 +2,7 @@ from web3 import Web3, EthereumTesterProvider
 import os
 from eth_account import Account
 from eth_account.signers.local import LocalAccount
-from web3.auto.infura import w3
+from web3.auto import w3
 from web3.middleware import construct_sign_and_send_raw_middleware
 import json
 import argparse
@@ -13,6 +13,7 @@ from utils import get_account
 from register import register
 
 def main(args):
+    w3 = Web3(Web3.HTTPProvider('http://127.0.0.1:7545'))
     account: LocalAccount = get_account()
     print(f"Is connected? {w3.isConnected()}")
     print(f"Your hot wallet address is {account.address}")
