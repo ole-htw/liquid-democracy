@@ -23,13 +23,32 @@ def main(args):
         raise SystemExit
 
     if args.action == 'register':
-        print(register(w3, account))
+        try:
+            erg = register(w3, account)
+            print("Sie haben sich erfoglreich registriert.")
+            print(erg)
+        except:
+            print("Die Registrierung ist leider fehlgeschlagen.")
     elif args.action == 'propose':
-        print(propose(w3, account, args.description))
+        try:
+            erg = propose(w3, account, args.description)
+            print("Ihr Gesetzesvorschlag wurde eingereicht. Vielen Dank.")
+            print(erg)
+        except:
+            print("Leider gab es einen Fehler. Ihr Gesetzesvorschlag wurde nicht eingereicht. Bitte versuchen Sie es erneut.")
     elif args.action == 'status':
-        print(status(w3, account))
+        try:
+            erg = status(w3, account)
+            print(erg)
+        except:
+            print("Leider gab es einen Fehler. Der Status kann derzeit nicht angezeigt werden.")
     elif args.action == 'vote':
-        print(vote(w3, account))
+        try:
+            erg = vote(w3, account)
+            print("Ihre Stimmabgabe war erfolgreich.")
+            print(erg)
+        except:
+            print('Leider ist die Stimmabgabe fehlgeschlagen. Bitte überprüfen Sie ihre Eingabe.')
     elif args.action == 'delegate':
         pass
     else:
