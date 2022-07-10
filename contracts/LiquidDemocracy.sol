@@ -6,47 +6,47 @@ enum Domain{ EDUCATION, ECOLOGY, ECONOMY }
 
 struct SubmittedVote {
     address voter;
-    uint proposalID;
+    uint billID;
     Vote vote;
 }
 
-struct Proposal {
+struct Bill {
     uint id;
     Domain domain;
     string description; 
 }
 
 contract LiquidDemocracy {
-    Proposal[] proposals;
-    mapping(uint => Vote[]) proposalVotes; // proposalID => votes
-    mapping(uint => mapping(address => Vote)) submittedVotes; // proposalID => voter => value
+    Bill[] bills;
+    mapping(uint => Vote[]) billVotes; // billID => votes
+    mapping(uint => mapping(address => Vote)) submittedVotes; // billID => voter => value
     mapping(address => mapping(Domain => address)) delegations; // who delegates what to who
     mapping(address => mapping(Domain => address[])) delegators;  // who was delegated for what by whom
 
     function propose(Domain domain, string memory description) public payable {
-        proposals.push(Proposal(
-            proposals.length,
+        bills.push(Bill(
+            bills.length,
             domain,
             description
         ));
     }
 
-    function vote(uint proposalID, Vote value) public payable {
-        require(proposalID < proposals.length, "Proposal ID does not exist.");
-        Domain domain = proposals[proposalID].domain;
+    function vote(uint billID, Vote value) public payable {
+        require(billID < bills.length, "Bill ID does not exist.");
+        Domain domain = bills[billID].domain;
         require(
             delegations[msg.sender][domain] == address(0), 
             "You have delegated votes in this domain."
         );
 
-        submittedVotes[proposalID][msg.sender] = value;
-        proposalVotes[proposalID].push(value);
+        submittedVotes[billID][msg.sender] = value;
+        billVotes[billID].push(value);
 
         // add delegated votes as well
         for (uint i = 0; i < delegators[msg.sender][domain].length; i++) {
             address voter = delegators[msg.sender][domain][i];
-            submittedVotes[proposalID][voter] = value;
-            proposalVotes[proposalID].push(value);
+            submittedVotes[billID][voter] = value;
+            billVotes[billID].push(value);
         }
     }
 
@@ -55,17 +55,24 @@ contract LiquidDemocracy {
         delegators[to][domain].push(msg.sender);
     }
 
-    function status(uint proposalID) public payable returns(int) {
-        int result = 0;
-        Vote[] memory votes = proposalVotes[proposalID];
-        for (uint i = 0; i < votes.length; i++) {
-            if (votes[i] == Vote.FOR) {
+    function votes(uint billID) public view returns(int result) {
+        Vote[] memory v = billVotes[billID];
+        for (uint i = 0; i < v.length; i++) {
+            if (v[i] == Vote.FOR) {
                 result++;
             }
-            if (votes[i] == Vote.AGAINST) {
+            if (v[i] == Vote.AGAINST) {
                 result--;
             }
         }
         return result;
+    }
+
+    function getDelegation(Domain domain) public view returns (address) {
+        return delegations[msg.sender][domain];
+    }
+
+    function getBills() public view returns (Bill[] memory) {
+        return bills;
     }
 }

@@ -17,42 +17,98 @@ dem der/die Wahlberechtigte für jede Abstimmung neu entscheiden kann, ob die ei
 selbst abgegeben oder weiter delegiert werden soll.
 
 
-## Smart Contract Logik
+## Implementierungsstrategie
 
-Die Wahlberechtigten werden mit ihrer Adresse in einem Array, dem Wählerverzeichnis, gespeichert. Falls ein Gesetzesvorschlag auftaucht, bekommt jede Adresse aus dem Wählerverzeichnis
-einen Coin oder Token, der spezifisch für den Gesetzesvorschlag ist. Um zu verhindern, dass man
-aus früheren Gesetzesvorschlägen Tokens oder Coins sammelt, haben wir mehrere Lösungen diskutiert: Eine Lösung ist es, dass mit dem Gesetzesvorschlag eine Coin generiert wird, die nur für den
-speziellen Gesetzesvorschlag gültig ist. Oder wir erstellen immer ein NFT mit einer ID, die auf
-den speziellen Gesetzesvorschlag verweist.
+Eine Alternative zum Token-Modell, die wir diskutiert haben,
+ist es die logischen Funktionen und Delegationen durch Methodenaufrufe und State innerhalb des Smart Contracts zu lösen.
 
-Der Gesetzesvorschlag zählt nur nach einer Deadline, wieviel Coins oder Tokens zu zwei Adressen
-verschickt worden sind (”Ja-Adresse” und ”Nein-Adresse”).
+Hierzu könnten Gesetzesentwürfe durch eine Funktion `propose(Domain domain, string description) public returns (Proposal)`
+eingereicht werden und damit zu einem Array hinzugefügt werden.
 
-Wenn es mehr Tokens oder Coins auf der ”Ja-Adresse” gibt, gilt der Gesetzesvorschlag als
-angenommen, sonst abgelehnt. Er landet auf einer Liste an angenommenen Gesetzesvorschlägen
-(sogenanntes ”Bundesgesetzblatt”).
+Nutzer könnten über eine Methode
+`vote(uint proposalID, Vote vote)}`
+für oder gegen einen Gesetzesentwurf abstimmen. Die Votes aller Adressen auf ein Proposal würden in einer Datenstruktur festgehalten.
 
-Der Vorteil dieser Lösung ist es, dass implizit die Liquid Democracy gegeben ist. Ein Wähler
-kann seine Stimme delegieren, indem er seine Stimme an eine andere Adresse sendet.
+Weiterhin könnten Nutzer ihre Stimme (auch Wahlbereich-spezifisch) an andere Adressen delegieren bzw. wieder abziehen.
+Sie wären dann nicht mehr selbst dazu in der Lage für Gesetzesentwürfe in dem jeweiligen Bereich abzustimmen.
+Die Delegationen könnten in einer Datenstruktur der Form `mapping(address => mapping(Domain => address))` festgehalten werden.
 
-
-## Steuerung durch Client
-
-Der Client kann den Wahl-spezifischen Token ausgeben und damit entweder
-- seine Stimme für den Gesetzesvorschlag abgeben,
-- seine Stimme gegen den Gesetzesvorschlag abgeben oder
-- seine Stimme an eine andere Adresse (Person oder Organisation) delegieren.
-Durch client-seitige Automatisierung kann erreicht werden, dass Wählerstimmen, etwa auch zu
-bestimmten Wahlbereichen, an andere Entitäten delegiert werden.
-Aufgrund der offenen Ethereum-API können individuelle Clients verwendet werden. Dies
-ermöglicht Nicht-Blockchain-Experten die Benutzung durch selbstgewählte Clients. Diese Clients
-können auch intelligent agieren, indem sie z.B. Gesetze aus bestimmten Themengebieten automatisch an andere Adressen weiterleiten.
+Abschließend, z.B. zu einer Deadline hin,
+würde ein Algorithmus die Stimmen, die ein Gesetzesentwurf erhalten hat, zählen.
+Hierbei würde rekursiv ein Lookup auf die Datenstruktur der Delegierungen erfolgen um die akkumulierte Gewichtung einer Stimme zu berechnen.
 
 <hr>
 
 ## Installation
 
+1. Abhängigkeiten installieren
+
 ```bash
 npm install truffle -g
 npm install
+pip3 install -r client/requirements.txt
+```
+
+2. Smart Contract deployen
+
+Netzwerke können in der [truffle-config.js](./truffle-config.js) konfiguriert werden.
+Der folgende Befehle wählt beispielhaft Ganache.
+
+```bash
+truffle migrate --network ganache
+```
+
+3. Umgebungsvariablen setzen
+
+Die Ausgabe des vorherigen Befehls enthält eine _Contract Address_. Diese muss als `CONTRACT_ADDR` gesetzt werden.
+
+```bash
+export CONTRACT_ADDR=0x.....
+```
+
+Außerdem braucht der Client ein Wallet, d.h. einen Private Key.
+Der folgende Befehl generiert einen neuen und exportiert ihn gleichzeitig in die Umgebungsvariablen.
+
+```bash
+export PRIVATE_KEY=0x`openssl rand -hex 32`
+```
+
+Jetzt muss noch der Endpunkt zu einer laufenden Node gesetzt werden. Für eine Verbindung mit Ganache kann es wie folgt aussehen:
+
+```bash
+export ENDPOINT=http://127.0.0.1:7545
+```
+
+4. Bedienung
+
+```bash
+python3 -m client --help
+```
+
+### Beispielhafte Bedienung
+
+Die folgende Befehlreihe macht einen Gesetzesvorschlag _"Hauptschule abschaffen"_ in der Domäne _"EDUCATION"_.
+Anschließend stimmt er für diesen Vorschlag und delegiert Abstimmungen im Bereich _"ECOLOGY"_ an ein externes Wallet.
+Schließlich wird der Status abgerufen, wo sich gesetzte Daten widerspiegeln.
+
+```bash
+python3 -m client propose --domain EDUCATION --description "Hauptschule abschaffen"
+python3 -m client vote --id 0 --value FOR
+python3 -m client delegate --domain ECOLOGY --address=0x3b2b3C2e2E7C93db335E69D827F3CC4bC2A2A2cB
+python3 -m client status
+```
+
+**Status-Ausgabe**
+
+```
+Gesetze
+======================
+ID: 0 | ECONOMY | Anarchie | -1
+ID: 1 | EDUCATION | Hauptschule abschaffen | 1
+
+Delegierungen
+======================
+ECOLOGY 0x0000000000000000000000000000000000000000
+ECONOMY 0x0000000000000000000000000000000000000000
+EDUCATION 0x0000000000000000000000000000000000000000
 ```
